@@ -25,7 +25,7 @@ func (c *client) read() {
 	}
 }
 
-func (c *client) write () {
+func (c *client) write() {
 	defer c.socket.Close()
 	for msg := range c.send {
 		err := c.socket.WriteMessage(websocket.TextMessage, msg)
