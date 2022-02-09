@@ -1,4 +1,4 @@
-module github.com/falence/go-blueprints/chat
+module github.com/falence/go-blueprints
 
 go 1.16
 

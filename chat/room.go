@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/falence/go-blueprints/trace"
 	"github.com/gorilla/websocket"
 )
 
@@ -17,6 +18,9 @@ type room struct {
 	leave chan *client
 	// clients hold all current clients in this room
 	clients map[*client]bool
+	// tracer will receive trace information of activity
+	// in the room
+	tracer trace.Tracer
 }
 
 // newRoom makes a new room
@@ -36,14 +40,18 @@ func (r *room) run() {
 		case client := <-r.join:
 			// joining
 			r.clients[client] = true
+			r.tracer.Trace("New client joined")
 		case client := <-r.leave:
 			// leaving
 			delete(r.clients, client)
 			close(client.send)
+			r.tracer.Trace("Client left")
 		case msg := <-r.forward:
+			r.tracer.Trace("Message received: ", string(msg))
 			// forward message to all clients
 			for client := range r.clients {
 				client.send <- msg
+				r.tracer.Trace(" -- sent to client")
 			}
 		}
 	}
