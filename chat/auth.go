@@ -37,6 +37,14 @@ func MustAuth(handler http.Handler) http.Handler {
 // format: /auth/{action}/{provider}
 func loginHandler(w http.ResponseWriter, r *http.Request) {
 	segs := strings.Split(r.URL.Path, "/")
+	if len(segs) != 4 {
+		http.Error(
+			w, 
+			"page not found",
+			http.StatusNotFound,
+		)
+		return
+	}
 	action := segs[2]
 	provider := segs[3]
 	switch action {
