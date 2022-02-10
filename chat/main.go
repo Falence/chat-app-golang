@@ -11,6 +11,8 @@ import (
 
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/stretchr/gomniauth"
+	"github.com/stretchr/gomniauth/providers/facebook"
+	"github.com/stretchr/gomniauth/providers/github"
 	"github.com/stretchr/gomniauth/providers/google"
 	"github.com/stretchr/objx"
 )
@@ -46,7 +48,17 @@ func main() {
 		google.New(
 			os.Getenv("GOOGLE_CLIENT_ID"),
 			os.Getenv("GOOGLE_CLIENT_SECRET"),
-			os.Getenv("REDIRECT_URL"),
+			os.Getenv("GOOGLE_REDIRECT_URL"),
+		),
+		github.New(
+			os.Getenv("GITHUB_CLIENT_ID"),
+			os.Getenv("GITHUB_CLIENT_SECRET"),
+			os.Getenv("GITHUB_REDIRECT_URL"),
+		),
+		facebook.New(
+			os.Getenv("FACEBOOK_CLIENT_ID"),
+			os.Getenv("FACEBOOK_CLIENT_SECRET"),
+			os.Getenv("FACEBOOK_REDIRECT_URL"),
 		),
 	)
 
