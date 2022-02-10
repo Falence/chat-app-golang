@@ -4,16 +4,15 @@ import (
 	"flag"
 	"log"
 	"net/http"
-
-	// "os"
+	"os"
 	"path/filepath"
 	"sync"
 	"text/template"
 
+	_ "github.com/joho/godotenv/autoload"
 	"github.com/stretchr/gomniauth"
 	"github.com/stretchr/gomniauth/providers/google"
 	"github.com/stretchr/objx"
-	// "github.com/falence/go-blueprints/trace"
 )
 
 // temple represents a single template
@@ -28,7 +27,7 @@ func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	t.once.Do(func() {
 		t.templ = template.Must(template.ParseFiles(filepath.Join("templates", t.filename)))
 	})
-	data := map[string]interface{} {
+	data := map[string]interface{}{
 		"Host": r.Host,
 	}
 	if authCookie, err := r.Cookie("auth"); err == nil {
@@ -42,12 +41,12 @@ func main() {
 	flag.Parse() // parse the flags
 
 	// setup gomniauth
-	gomniauth.SetSecurityKey("my-auth-key")
+	gomniauth.SetSecurityKey(os.Getenv("GOMNIAUTH_KEY"))
 	gomniauth.WithProviders(
 		google.New(
-			"310169518174-jjqlfedt8217illgaqp54o6029hljeid.apps.googleusercontent.com",
-			"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",
-			"http://localhost:8080/auth/callback/google",
+			os.Getenv("GOOGLE_CLIENT_ID"),
+			os.Getenv("GOOGLE_CLIENT_SECRET"),
+			os.Getenv("REDIRECT_URL"),
 		),
 	)
 
