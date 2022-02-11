@@ -67,3 +67,18 @@ func (GravatarAvatar) GetAvatarURL(c *client) (string, error) {
 	io.WriteString(m, strings.ToLower(useridStr))
 	return fmt.Sprintf("//www.gravatar.com/avatar/" + useridStr), nil
 }
+
+
+type FileSystemAvatar struct {}
+var UseFileSystemAvatar FileSystemAvatar
+func (FileSystemAvatar) GetAvatarURL(c *client) (string, error) {
+	userid, ok := c.userData["userid"]
+	if !ok {
+		return "", ErrNoAvatarURL
+	}
+	useridStr, ok := userid.(string)
+	if !ok {
+		return "", ErrNoAvatarURL
+	}
+	return "/avatars/" + useridStr + ".jpg", nil
+}
