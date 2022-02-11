@@ -55,15 +55,15 @@ func (GravatarAvatar) GetAvatarURL(c *client) (string, error) {
 	// 	}
 	// }
 	// return "", ErrNoAvatarURL
-	email, ok := c.userData["email"]
+	userid, ok := c.userData["userid"]
 	if !ok {
 		return "", ErrNoAvatarURL
 	}
-	emailStr, ok := email.(string)
+	useridStr, ok := userid.(string)
 	if !ok {
 		return "", ErrNoAvatarURL
 	}
 	m := md5.New()
-	io.WriteString(m, strings.ToLower(emailStr))
-	return fmt.Sprintf("//www.gravatar.com/avatar/%x", m.Sum(nil)), nil
+	io.WriteString(m, strings.ToLower(useridStr))
+	return fmt.Sprintf("//www.gravatar.com/avatar/" + useridStr), nil
 }
