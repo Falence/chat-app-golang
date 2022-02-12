@@ -8,8 +8,23 @@ import (
 	"strings"
 
 	"github.com/stretchr/gomniauth"
+	gomniauthcommon "github.com/stretchr/gomniauth/common"
 	"github.com/stretchr/objx"
 )
+
+type ChatUser interface {
+	UniqueID() string
+	AvatarURL() string
+}
+
+type chatUser struct {
+	gomniauthcommon.User
+	uniqueID string
+}
+
+func (u chatUser) UniqueID() string {
+	return u.uniqueID
+}
 
 type authHandler struct {
 	next http.Handler
@@ -40,7 +55,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	segs := strings.Split(r.URL.Path, "/")
 	if len(segs) != 4 {
 		http.Error(
-			w, 
+			w,
 			"page not found",
 			http.StatusNotFound,
 		)
@@ -53,7 +68,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		provider, err := gomniauth.Provider(provider)
 		if err != nil {
 			http.Error(
-				w, 
+				w,
 				fmt.Sprintf("Error when trying to get provider %s: %s", provider, err),
 				http.StatusBadRequest,
 			)
@@ -79,7 +94,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 				http.StatusBadRequest,
 			)
 			return
-		} 
+		}
 		creds, err := provider.CompleteAuth(objx.MustFromURLQuery(r.URL.RawQuery))
 		if err != nil {
 			http.Error(
@@ -103,16 +118,16 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(m, strings.ToLower(user.Email()))
 		userId := fmt.Sprintf("%x", m.Sum(nil))
 		authCookieValue := objx.New(map[string]interface{}{
-			"userid": userId,
-			"name": user.Name(),
+			"userid":     userId,
+			"name":       user.Name(),
 			"avatar_url": user.AvatarURL(),
-			"email": user.Email(),
+			"email":      user.Email(),
 		}).MustBase64()
-		
+
 		http.SetCookie(w, &http.Cookie{
-			Name: "auth",
+			Name:  "auth",
 			Value: authCookieValue,
-			Path: "/",
+			Path:  "/",
 		})
 		w.Header().Set("Location", "/chat")
 		w.WriteHeader(http.StatusTemporaryRedirect)
