@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"io/ioutil"
+	"path"
 	"strings"
 )
 
@@ -72,13 +74,21 @@ func (GravatarAvatar) GetAvatarURL(c *client) (string, error) {
 type FileSystemAvatar struct {}
 var UseFileSystemAvatar FileSystemAvatar
 func (FileSystemAvatar) GetAvatarURL(c *client) (string, error) {
-	userid, ok := c.userData["userid"]
-	if !ok {
-		return "", ErrNoAvatarURL
+	if userid, ok := c.userData["userid"]; ok {
+		if useridStr, ok := userid.(string); ok {
+			files, err := ioutil.ReadDir("avatars")
+			if err != nil {
+				return "", ErrNoAvatarURL
+			}
+			for _, file := range files {
+				if file.IsDir() {
+					continue
+				}
+				if match, _ := path.Match(useridStr + "*", file.Name()); match {
+					return "/avatars/" + file.Name(), nil
+				}
+			}
+		}
 	}
-	useridStr, ok := userid.(string)
-	if !ok {
-		return "", ErrNoAvatarURL
-	}
-	return "/avatars/" + useridStr + ".jpg", nil
+	return "", ErrNoAvatarURL
 }
