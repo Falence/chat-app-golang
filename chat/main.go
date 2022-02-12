@@ -17,6 +17,9 @@ import (
 	"github.com/stretchr/objx"
 )
 
+// set the active Avatar implementation
+var avatars Avatar = UseFileSystemAvatar
+
 // temple represents a single template
 type templateHandler struct {
 	once     sync.Once
