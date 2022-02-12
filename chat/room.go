@@ -22,8 +22,6 @@ type room struct {
 	// tracer will receive trace information of activity
 	// in the room
 	tracer trace.Tracer
-	// avatar is how avatar information will be obtained
-	avatar Avatar
 }
 
 // newRoom makes a new room
@@ -34,7 +32,6 @@ func newRoom(avatar Avatar) *room {
 		leave: make(chan *client),
 		clients: make(map[*client]bool),
 		tracer: trace.Off(),
-		avatar: avatar,
 	}
 }
 

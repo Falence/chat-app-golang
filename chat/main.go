@@ -18,7 +18,11 @@ import (
 )
 
 // set the active Avatar implementation
-var avatars Avatar = UseFileSystemAvatar
+var avatars Avatar = TryAvatars{
+	UseFileSystemAvatar,
+	UseAuthAvatar,
+	UseGravatar,
+}
 
 // temple represents a single template
 type templateHandler struct {
@@ -67,7 +71,7 @@ func main() {
 
 	// r := newRoom(UseAuthAvatar)
 	// r := newRoom(UseGravatar)
-	r := newRoom(UseFileSystemAvatar)
+	r := newRoom(avatars)
 	// r.tracer = trace.New(os.Stdout)
 	http.Handle("/chat", MustAuth(&templateHandler{filename: "chat.html"}))
 	http.Handle("/login", &templateHandler{filename: "login.html"})
