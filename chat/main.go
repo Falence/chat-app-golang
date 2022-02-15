@@ -49,6 +49,9 @@ func main() {
 	var addr = flag.String("addr", ":8080", "The addr of the application")
 	flag.Parse() // parse the flags
 
+	os.Setenv("PORT", *addr)
+	PORT := os.Getenv("PORT")
+
 	// setup gomniauth
 	gomniauth.SetSecurityKey(os.Getenv("GOMNIAUTH_KEY"))
 	gomniauth.WithProviders(
@@ -98,8 +101,8 @@ func main() {
 	// get the room going
 	go r.run()
 	// start the web server
-	log.Println("Starting web server on", *addr)
-	if err := http.ListenAndServe(*addr, nil); err != nil {
+	log.Println("Starting web server on", PORT)
+	if err := http.ListenAndServe(PORT, nil); err != nil {
 		log.Fatal("ListenAndServe:", err)
 	}
 }
