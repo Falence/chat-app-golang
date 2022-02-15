@@ -1,1 +1,1 @@
-web: bin/chat
+web: chat/main.go
