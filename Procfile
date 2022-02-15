@@ -1,1 +1,1 @@
-web: ./chat/bin/chat
+web: bin/chat
