@@ -20,6 +20,6 @@ This permits us consume their API to have access to users information such as na
 - `cd` into the `chat` directory and run `go build -o chat` to build the program.
 - To run our program, type `./chat`.
 - You can now open the Chat App on different browsers: `http://localhost:8080/chat`
-- You'll be prompted to login
-- The you can now chat
+- You'll be prompted to login.
+- Then you can now chat.
 
